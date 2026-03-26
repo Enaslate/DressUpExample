@@ -1572,7 +1572,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 701787974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c472133b19a521542beed0489ac2e134, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cb99e02934dc2b49880deaa7d4f7882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TabUiView
   _type: 3
@@ -1945,7 +1945,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 990820815}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3afcf9bf9d453a646a3ffb97c0e80fa4, type: 3}
+  m_Script: {fileID: 11500000, guid: 33658fcd28370b14cb7f1c83e892eb0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
 --- !u!61 &990820819
@@ -2233,7 +2233,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1016621152}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f96d65ff244e54e9c1e87e99815647, type: 3}
+  m_Script: {fileID: 11500000, guid: d4decd1eca4d81c46a409bbbe013e40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemView
   _data: {fileID: 11400000, guid: 45f8069f77312af4e8da5454028f963a, type: 2}
@@ -2380,10 +2380,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1218001198}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c472133b19a521542beed0489ac2e134, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cb99e02934dc2b49880deaa7d4f7882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TabUiView
-  _type: 0
+  _type: 5
   _image: {fileID: 1218001200}
   _defaultSprite: {fileID: -2882974768894518874, guid: f8ec4ce3466b20940b30d380b0de2ea1, type: 3}
   _activeSprite: {fileID: 477915903493402997, guid: 02e16a5b66070d74984340885e88bfa5, type: 3}
@@ -2435,7 +2435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a0f0dd586649d048bf6cfcceace5033, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HandController
-  _hand: {fileID: 1611677386}
+  _handView: {fileID: 1611677388}
   _makeupController: {fileID: 2011858954}
   _mainCamera: {fileID: 519420031}
   _chestPoint: {fileID: 640696020}
@@ -2444,7 +2444,6 @@ MonoBehaviour:
   _eyeBrushTool: {fileID: 2021308386}
   _lipstickTool: {fileID: 1907378686}
   _blushBrushTool: {fileID: 1574535927}
-  _offset: {x: 0.05, y: -0.4, z: 0}
 --- !u!1 &1336554648
 GameObject:
   m_ObjectHideFlags: 0
@@ -2639,7 +2638,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1360171371}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f96d65ff244e54e9c1e87e99815647, type: 3}
+  m_Script: {fileID: 11500000, guid: d4decd1eca4d81c46a409bbbe013e40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemView
   _data: {fileID: 0}
@@ -2836,7 +2835,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1574535924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f96d65ff244e54e9c1e87e99815647, type: 3}
+  m_Script: {fileID: 11500000, guid: d4decd1eca4d81c46a409bbbe013e40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemView
   _data: {fileID: 0}
@@ -2851,8 +2850,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1611677386}
   - component: {fileID: 1611677387}
+  - component: {fileID: 1611677388}
   m_Layer: 0
-  m_Name: Hand
+  m_Name: HandView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2936,6 +2936,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1611677388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1611677385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822270a49fbb32d449459f4e861e36ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandView
+  _handTransform: {fileID: 1611677386}
+  _offset: {x: 0.05, y: -0.4, z: 0}
 --- !u!1 &1775928951
 GameObject:
   m_ObjectHideFlags: 0
@@ -3078,7 +3092,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1775928951}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c472133b19a521542beed0489ac2e134, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cb99e02934dc2b49880deaa7d4f7882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TabUiView
   _type: 1
@@ -3372,7 +3386,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1907378683}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f96d65ff244e54e9c1e87e99815647, type: 3}
+  m_Script: {fileID: 11500000, guid: d4decd1eca4d81c46a409bbbe013e40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemView
   _data: {fileID: 0}
@@ -3622,7 +3636,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2021308383}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23f96d65ff244e54e9c1e87e99815647, type: 3}
+  m_Script: {fileID: 11500000, guid: d4decd1eca4d81c46a409bbbe013e40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemView
   _data: {fileID: 0}
@@ -3961,7 +3975,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2131129025}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c472133b19a521542beed0489ac2e134, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cb99e02934dc2b49880deaa7d4f7882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TabUiView
   _type: 2

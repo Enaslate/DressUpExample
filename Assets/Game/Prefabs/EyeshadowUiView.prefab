@@ -107,10 +107,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5615109697470881624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9d95c501924b274db1ad2e703af160b, type: 3}
+  m_Script: {fileID: 11500000, guid: 76016511bea1c0f40ace46eaff44afbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIItemButton
-  _iconImage: {fileID: 2734366453380792684}
+  _image: {fileID: 2734366453380792684}
 --- !u!114 &7302423085391666619
 MonoBehaviour:
   m_ObjectHideFlags: 0

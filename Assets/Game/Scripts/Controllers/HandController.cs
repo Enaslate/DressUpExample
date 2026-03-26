@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HandController : MonoBehaviour
 {
-    [SerializeField] private Transform _hand;
+    [SerializeField] private HandView _handView;
     [SerializeField] private MakeupController _makeupController;
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private Transform _chestPoint;
@@ -15,19 +15,16 @@ public class HandController : MonoBehaviour
     [SerializeField] private MakeupToolView _lipstickTool;
     [SerializeField] private MakeupToolView _blushBrushTool;
 
-    [SerializeField] private Vector3 _offset = new Vector3(0.05f, -0.5f, 0);
-
     private InputController _inputController;
     private Vector3 _startPosition;
     private MakeupItemData _currentItem;
     private GameObject _currentItemObject;
     private HandState _state = HandState.Idle;
-    private Tween _currentTween;
     private SpriteRenderer _currentItemRenderer;
 
     private void Awake()
     {
-        _startPosition = _hand.position;
+        _startPosition = _handView.transform.position;
         SetAllToolsActive(false);
     }
 
@@ -73,39 +70,22 @@ public class HandController : MonoBehaviour
 
         _currentItemRenderer ??= _currentItemObject.GetComponent<SpriteRenderer>();
 
-        Vector3 toolPos = _currentItemObject.transform.position + _offset;
-        toolPos.z = _hand.position.z;
-        _currentTween?.Kill();
-        yield return _hand.DOMove(toolPos, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return _handView.MoveTo(_currentItemObject.transform.position, 0.3f, withOffset: true).WaitForCompletion();
 
-        Sequence disappearSequence = DOTween.Sequence();
-        disappearSequence.Join(_currentItemObject.transform.DOScale(0, 0.2f).SetEase(Ease.InBack));
-        if (_currentItemRenderer != null)
-            disappearSequence.Join(_currentItemRenderer.DOFade(0, 0.2f));
-        yield return disappearSequence.WaitForCompletion();
-        _currentItemObject.SetActive(false);
-        _currentItemObject.transform.localScale = Vector3.one;
-        if (_currentItemRenderer != null)
-            _currentItemRenderer.color = Color.white;
+        yield return HideWorldTool();
 
         var handTool = GetHandTool(type);
-        if (handTool != null) handTool.gameObject.SetActive(true);
+        if (handTool != null) 
+            handTool.gameObject.SetActive(true);
 
-        Vector3 targetItem = new Vector3(itemPosition.x, itemPosition.y, _hand.position.z) + _offset;
-        yield return _hand.DOMove(targetItem, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return _handView.MoveTo(itemPosition, 0.3f, withOffset: true).WaitForCompletion();
 
         if (type != MakeupType.Lipstick && type != MakeupType.Cream)
         {
-            for (int i = 0; i < 3; i++)
-            {
-                float offsetX = Random.Range(-0.05f, 0.05f);
-                yield return _hand.DOMoveX(_hand.position.x + offsetX, 0.05f).SetEase(Ease.InOutSine).WaitForCompletion();
-                yield return _hand.DOMoveX(_hand.position.x - offsetX, 0.05f).SetEase(Ease.InOutSine).WaitForCompletion();
-            }
+            yield return _handView.ShakeX(0.05f, 3).WaitForCompletion();
         }
 
-        Vector3 targetChest = new Vector3(_chestPoint.position.x, _chestPoint.position.y, _hand.position.z);
-        yield return _hand.DOMove(targetChest, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return _handView.MoveTo(_chestPoint.position, 0.3f).WaitForCompletion();
 
         _state = HandState.Dragging;
     }
@@ -122,22 +102,15 @@ public class HandController : MonoBehaviour
 
         _currentItemRenderer ??= _currentItemObject.GetComponent<SpriteRenderer>();
 
-        Vector3 toolPos = _currentItemObject.transform.position + _offset;
-        toolPos.z = _hand.position.z;
-        yield return _hand.DOMove(toolPos, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return _handView.MoveTo(_currentItemObject.transform.position, 0.3f, withOffset: true).WaitForCompletion();
 
         var handTool = GetHandTool(_currentItem.Type);
-        if (handTool != null) handTool.gameObject.SetActive(false);
+        if (handTool != null)
+            handTool.gameObject.SetActive(false);
 
-        _currentItemObject.SetActive(true);
-        Sequence appearSequence = DOTween.Sequence();
-        appearSequence.Join(_currentItemObject.transform.DOScale(1, 0.2f).SetEase(Ease.OutBack));
-        if (_currentItemRenderer != null)
-            appearSequence.Join(_currentItemRenderer.DOFade(1, 0.2f));
-        yield return appearSequence.WaitForCompletion();
+        yield return ShowWorldTool();
 
-        Vector3 targetStart = new Vector3(_startPosition.x, _startPosition.y, _hand.position.z);
-        yield return _hand.DOMove(targetStart, 0.3f).SetEase(Ease.InOutQuad).WaitForCompletion();
+        yield return _handView.MoveTo(_startPosition, 0.3f, Ease.InOutQuad).WaitForCompletion();
 
         SetAllToolsActive(false);
 
@@ -147,12 +120,23 @@ public class HandController : MonoBehaviour
         _state = HandState.Idle;
     }
 
+    private IEnumerator AnimateApply()
+    {
+        yield return _handView.MoveTo(_facePoint.position, 0.1f, Ease.InOutSine, true).WaitForCompletion();
+
+        yield return _handView.ApplyBrushStrokes(0.03f, 5).WaitForCompletion();
+
+        _makeupController.Makeup(_currentItem);
+
+        StartCoroutine(ReturnCoroutine());
+    }
+
     private void OnDragMoved(Vector2 screenPos)
     {
         if (_state != HandState.Dragging) return;
         Vector3 worldPos = _mainCamera.ScreenToWorldPoint(screenPos);
-        worldPos.z = _hand.position.z;
-        _hand.position = worldPos;
+        worldPos.z = _handView.transform.position.z;
+        _handView.transform.position = worldPos;
     }
 
     private void OnDragEnded(Vector2 screenPos)
@@ -164,30 +148,6 @@ public class HandController : MonoBehaviour
             _state = HandState.Applying;
             StartCoroutine(AnimateApply());
         }
-    }
-
-    private IEnumerator AnimateApply()
-    {
-        Vector3 targetFace = new Vector3(
-            _facePoint.position.x,
-            _facePoint.position.y,
-            _hand.position.z) + _offset;
-
-        yield return _hand.DOMove(targetFace, 0.1f).SetEase(Ease.InOutSine).WaitForCompletion();
-
-        for (int i = 0; i < 5; i++)
-        {
-            float offsetX = Random.Range(-0.03f, 0.03f);
-            yield return _hand.DOMoveX(_hand.position.x + offsetX, 0.03f).SetEase(Ease.InOutSine).WaitForCompletion();
-            yield return _hand.DOMoveX(_hand.position.x - offsetX, 0.03f).SetEase(Ease.InOutSine).WaitForCompletion();
-        }
-
-        _makeupController.Makeup(_currentItem);
-
-        Vector3 targetChest = new Vector3(_chestPoint.position.x, _chestPoint.position.y, _hand.position.z);
-        yield return _hand.DOMove(targetChest, 0.2f).SetEase(Ease.InOutSine).WaitForCompletion();
-
-        StartCoroutine(ReturnCoroutine());
     }
 
     private void OnTap(Vector2 screenPos)
@@ -230,9 +190,32 @@ public class HandController : MonoBehaviour
         };
     }
 
+    public IEnumerator ShowWorldTool()
+    {
+        _currentItemObject.SetActive(true);
+        Sequence appearSequence = DOTween.Sequence();
+        appearSequence.Join(_currentItemObject.transform.DOScale(1, 0.2f).SetEase(Ease.OutBack));
+        if (_currentItemRenderer != null)
+            appearSequence.Join(_currentItemRenderer.DOFade(1, 0.2f));
+        yield return appearSequence.WaitForCompletion();
+    }
+
+    public IEnumerator HideWorldTool()
+    {
+        Sequence disappearSequence = DOTween.Sequence();
+        disappearSequence.Join(_currentItemObject.transform.DOScale(0, 0.2f).SetEase(Ease.InBack));
+        if (_currentItemRenderer != null)
+            disappearSequence.Join(_currentItemRenderer.DOFade(0, 0.2f));
+        yield return disappearSequence.WaitForCompletion();
+        _currentItemObject.SetActive(false);
+        _currentItemObject.transform.localScale = Vector3.one;
+        if (_currentItemRenderer != null)
+            _currentItemRenderer.color = Color.white;
+    }
+
     private void OnDestroy()
     {
-        _currentTween?.Kill();
+        _handView?.KillTween();
         if (_inputController != null)
         {
             _inputController.OnTapPerformed -= OnTap;

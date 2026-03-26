@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class UIItemButton : MonoBehaviour
 {
-    [SerializeField] private Image _iconImage;
+    [SerializeField] private Image _image;
     private MakeupItemData _itemData;
     private HandController _handController;
 
@@ -11,7 +11,7 @@ public class UIItemButton : MonoBehaviour
     {
         _itemData = data;
         _handController = hand;
-        _iconImage.sprite = data.ItemSprite;
+        _image.sprite = data.ItemSprite;
         GetComponent<Button>().onClick.AddListener(() =>
         {
             var worldPos = transform.position;
