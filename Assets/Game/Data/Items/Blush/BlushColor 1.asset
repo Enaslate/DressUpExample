@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3aa3afdea9c7eaf47a806758651eccdb, type: 3}
-  m_Name: Cream
+  m_Name: BlushColor 1
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemData
-  <Type>k__BackingField: 3
-  <ItemSprite>k__BackingField: {fileID: -3356302069181093370, guid: 9ed9174f99905134e9a1e95b6b12e4ee, type: 3}
-  <ResultSprite>k__BackingField: {fileID: 0}
+  <Type>k__BackingField: 2
+  <ItemSprite>k__BackingField: {fileID: 2735780376057595307, guid: 453bb8c3bb7c6b64d8375019160de47d, type: 3}
+  <ResultSprite>k__BackingField: {fileID: 21300000, guid: 99c799b0c1fa22f4e96a8fcf0e458386, type: 3}

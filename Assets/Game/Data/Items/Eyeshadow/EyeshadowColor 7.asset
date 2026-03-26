@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3aa3afdea9c7eaf47a806758651eccdb, type: 3}
-  m_Name: BlushColor1
+  m_Name: EyeshadowColor 7
   m_EditorClassIdentifier: Assembly-CSharp::MakeupItemData
   <Type>k__BackingField: 1
-  <ItemSprite>k__BackingField: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  <ResultSprite>k__BackingField: {fileID: 21300000, guid: d48cc4da58a63564da9f3eeac4f607d4, type: 3}
+  <ItemSprite>k__BackingField: {fileID: 7146465050932404380, guid: 3d5e7a6a2364ea447995993aa24caabe, type: 3}
+  <ResultSprite>k__BackingField: {fileID: 21300000, guid: e8778347fdbe24e4482a43b0e6bad472, type: 3}

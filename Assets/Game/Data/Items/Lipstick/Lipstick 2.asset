@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aa3afdea9c7eaf47a806758651eccdb, type: 3}
+  m_Name: Lipstick 2
+  m_EditorClassIdentifier: Assembly-CSharp::MakeupItemData
+  <Type>k__BackingField: 3
+  <ItemSprite>k__BackingField: {fileID: -1451781210149412861, guid: 831d5b27fa5ce4e4ca7adff2830f352c, type: 3}
+  <ResultSprite>k__BackingField: {fileID: 21300000, guid: 893abff13be42c148934c51a818e08b0, type: 3}

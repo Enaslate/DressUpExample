@@ -25,6 +25,11 @@ public class HandController : MonoBehaviour
         _inputController.OnDragEnded += OnDragEnded;
     }
 
+    public void SelectItem(MakeupItemData itemData)
+    {
+        _currentItem = itemData;
+    }
+
     private void OnTap(Vector2 screenPos)
     {
         var worldPos = _mainCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0));
