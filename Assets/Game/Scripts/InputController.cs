@@ -8,6 +8,7 @@ public class InputController : IDisposable
 
     private bool _isDragging;
 
+    public event Action<Vector2> OnTapPerformed;
     public event Action<Vector2> OnDragStarted;
     public event Action<Vector2> OnDragMoved;
     public event Action<Vector2> OnDragEnded;
@@ -16,10 +17,20 @@ public class InputController : IDisposable
     {
         _actions = actions;
 
+        _actions.Player.Tap.performed += OnTap;
         _actions.Player.Touch.performed += OnTouchStarted;
         _actions.Player.Touch.canceled += OnTouchEnded;
 
         _actions.Player.PointerPosition.performed += OnPointerMoved;
+    }
+
+    private void OnTap(InputAction.CallbackContext context)
+    {
+        if (_isDragging) return;
+
+        Vector2 pos = _actions.Player.PointerPosition.ReadValue<Vector2>();
+        OnTapPerformed?.Invoke(pos);
+        Debug.Log("Tag performed");
     }
 
     private void OnTouchStarted(InputAction.CallbackContext context)
@@ -29,7 +40,6 @@ public class InputController : IDisposable
 
         Vector2 pos = _actions.Player.PointerPosition.ReadValue<Vector2>();
         OnDragStarted?.Invoke(pos);
-        Debug.Log("Drag started at " + pos);
     }
 
     private void OnTouchEnded(InputAction.CallbackContext context)
@@ -39,7 +49,6 @@ public class InputController : IDisposable
 
         Vector2 pos = _actions.Player.PointerPosition.ReadValue<Vector2>();
         OnDragEnded?.Invoke(pos);
-        Debug.Log("Drag ended at " + pos);
     }
 
     private void OnPointerMoved(InputAction.CallbackContext context)
@@ -48,6 +57,7 @@ public class InputController : IDisposable
 
         Vector2 pos = context.ReadValue<Vector2>();
         OnDragMoved?.Invoke(pos);
+        Debug.Log("Drag at " + pos);
     }
 
     public void Dispose()
