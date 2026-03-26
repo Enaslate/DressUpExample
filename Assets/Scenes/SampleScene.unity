@@ -1117,7 +1117,7 @@ Transform:
   m_GameObject: {fileID: 614184840}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.426, y: 1.282, z: 1}
+  m_LocalPosition: {x: -0.367, y: 1.282, z: 1}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1627,7 +1627,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d00d7c0dc9219b44b966a30b0edced92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntryPoint
+  _targetWidth: 1
   _handController: {fileID: 1255829096}
+  _camera: {fileID: 519420031}
 --- !u!1 &803118414
 GameObject:
   m_ObjectHideFlags: 0
@@ -3184,7 +3186,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 99c799b0c1fa22f4e96a8fcf0e458386, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3192,7 +3194,7 @@ SpriteRenderer:
   m_Size: {x: 1.8518518, y: 3.7037036}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1900541969
 GameObject:
@@ -3275,7 +3277,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 983becb0d47a2f543b7953a39cd51e1a, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3283,7 +3285,7 @@ SpriteRenderer:
   m_Size: {x: 1.8518518, y: 3.7037036}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1907378683
 GameObject:
@@ -3826,7 +3828,7 @@ Transform:
   m_GameObject: {fileID: 2065183576}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.43, y: 1.278, z: 1}
+  m_LocalPosition: {x: 0.363, y: 1.278, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

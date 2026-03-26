@@ -62,6 +62,7 @@ public class InputController : IDisposable
 
     public void Dispose()
     {
+        _actions.Player.Tap.performed -= OnTap;
         _actions.Player.Touch.performed -= OnTouchStarted;
         _actions.Player.Touch.canceled -= OnTouchEnded;
         _actions.Player.PointerPosition.performed -= OnPointerMoved;
