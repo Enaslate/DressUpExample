@@ -1,7 +1,7 @@
 public enum HandState
 {
     Idle,
-    TakingItem,
+    Taking,
     Dragging,
     Applying,
     Returning

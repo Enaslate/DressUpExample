@@ -12,6 +12,10 @@ public class UIItemButton : MonoBehaviour
         _itemData = data;
         _handController = hand;
         _iconImage.sprite = data.ItemSprite;
-        GetComponent<Button>().onClick.AddListener(() => _handController.SelectItem(_itemData));
+        GetComponent<Button>().onClick.AddListener(() =>
+        {
+            var worldPos = transform.position;
+            _handController.SelectItem(_itemData, worldPos, this.gameObject);
+        });
     }
 }

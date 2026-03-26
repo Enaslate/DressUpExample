@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: dfdfd78cabe06824fb584d4c8d38e362
+guid: a4054f027383f7f498a98aa87cc317a3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1764545999717624069
-    second: lipstick_03_0
+      213: 4665549093041750926
+    second: eye_brush_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lipstick_03_0
+      name: eye_brush_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 116
-        height: 354
+        width: 88
+        height: 681
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 509610fdc3dec7810800000000000000
-      internalID: 1764545999717624069
+      spriteID: e8346e45e2c5fb040800000000000000
+      internalID: 4665549093041750926
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lipstick_03_0: 1764545999717624069
+      eye_brush_0: 4665549093041750926
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

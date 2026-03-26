@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 public class HandController : MonoBehaviour
@@ -5,73 +7,216 @@ public class HandController : MonoBehaviour
     [SerializeField] private Transform _hand;
     [SerializeField] private MakeupController _makeupController;
     [SerializeField] private Camera _mainCamera;
+    [SerializeField] private Transform _chestPoint;
+    [SerializeField] private Transform _facePoint;
+
+    [SerializeField] private MakeupToolView _creamTool;
+    [SerializeField] private MakeupToolView _eyeBrushTool;
+    [SerializeField] private MakeupToolView _lipstickTool;
+    [SerializeField] private MakeupToolView _blushBrushTool;
+
+    [SerializeField] private Vector3 _offset = new Vector3(0.05f, -0.4f, 0);
 
     private InputController _inputController;
     private Vector3 _startPosition;
-
-    [SerializeField] private MakeupItemData _currentItem;
+    private MakeupItemData _currentItem;
+    private GameObject _currentItemObject;
+    private HandState _state = HandState.Idle;
+    private Tween _currentTween;
+    private SpriteRenderer _currentItemRenderer;
 
     private void Awake()
     {
         _startPosition = _hand.position;
+        SetAllToolsActive(false);
     }
 
     public void Setup(InputController inputController)
     {
         _inputController = inputController;
-
         _inputController.OnTapPerformed += OnTap;
         _inputController.OnDragMoved += OnDragMoved;
         _inputController.OnDragEnded += OnDragEnded;
     }
 
-    public void SelectItem(MakeupItemData itemData)
+    public void SelectItem(MakeupItemData itemData, Vector3 itemPosition, GameObject itemObject)
     {
+        if (_state != HandState.Idle) return;
         _currentItem = itemData;
+        _currentItemObject = itemObject;
+        _currentItemRenderer = itemObject.GetComponent<SpriteRenderer>();
+        _state = HandState.Taking;
+
+        var tool = itemData.Type switch
+        {
+            MakeupType.Cream => _creamTool,
+            MakeupType.Eyeshadow => _eyeBrushTool,
+            MakeupType.Lipstick => _lipstickTool,
+            MakeupType.Blush => _blushBrushTool,
+            _ => null
+        };
+        if (tool != null)
+        {
+            tool.Setup(itemData);
+            tool.gameObject.SetActive(true);
+        }
+
+        StartCoroutine(AnimateTakeItem(itemPosition, itemData.Type));
     }
 
-    private void OnTap(Vector2 screenPos)
+    private IEnumerator AnimateTakeItem(Vector3 itemPosition, MakeupType type)
     {
-        var worldPos = _mainCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0));
-        var hit = Physics2D.OverlapPoint(worldPos);
-        if (hit != null)
+        Vector3 targetItem = new Vector3(itemPosition.x, itemPosition.y, _hand.position.z) + _offset;
+        _currentTween?.Kill();
+        yield return _hand.DOMove(targetItem, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+
+        if (_currentItemObject != null && _currentItem.Type == MakeupType.Cream && _currentItemRenderer != null)
         {
-            if (hit.TryGetComponent<MakeupItemView>(out var view))
+            Sequence disappearSequence = DOTween.Sequence();
+            disappearSequence.Join(_currentItemObject.transform.DOScale(0, 0.2f).SetEase(Ease.InBack));
+            disappearSequence.Join(_currentItemRenderer.DOFade(0, 0.2f));
+            yield return disappearSequence.WaitForCompletion();
+            _currentItemObject.SetActive(false);
+            _currentItemObject.transform.localScale = Vector3.one;
+            if (_currentItemRenderer != null)
+                _currentItemRenderer.color = new Color(1, 1, 1, 1);
+        }
+
+        if (type != MakeupType.Lipstick && type != MakeupType.Cream)
+        {
+            for (int i = 0; i < 3; i++)
             {
-                var data = view.GetData();
-                _currentItem = data;
-                Debug.Log("Item selected");
-            }
-            else if (hit.TryGetComponent<LoofahView>(out var loofah))
-            {
-                loofah.Clear(_makeupController);
+                float offsetX = Random.Range(-0.05f, 0.05f);
+                yield return _hand.DOMoveX(_hand.position.x + offsetX, 0.05f).SetEase(Ease.InOutSine).WaitForCompletion();
+                yield return _hand.DOMoveX(_hand.position.x - offsetX, 0.05f).SetEase(Ease.InOutSine).WaitForCompletion();
             }
         }
+
+        Vector3 targetChest = new Vector3(_chestPoint.position.x, _chestPoint.position.y, _hand.position.z);
+        yield return _hand.DOMove(targetChest, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+
+        _state = HandState.Dragging;
     }
 
     private void OnDragMoved(Vector2 screenPos)
     {
-        if (_currentItem == null) return;
-
-        var worldPos = _mainCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0));
+        if (_state != HandState.Dragging) return;
+        Vector3 worldPos = _mainCamera.ScreenToWorldPoint(screenPos);
         worldPos.z = _hand.position.z;
         _hand.position = worldPos;
     }
 
     private void OnDragEnded(Vector2 screenPos)
     {
-        var worldPoint = _mainCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0));
+        if (_state != HandState.Dragging) return;
+        Vector3 worldPoint = _mainCamera.ScreenToWorldPoint(screenPos);
         if (_makeupController.IsInZone(worldPoint) && _currentItem != null)
         {
-            Debug.Log("Release in face zone");
-            _makeupController.Makeup(_currentItem);
-            _hand.position = _startPosition;
-            _currentItem = null;
-        }        
+            _state = HandState.Applying;
+            StartCoroutine(AnimateApply());
+        }
+    }
+
+    private IEnumerator AnimateApply()
+    {
+        Vector3 targetFace = new Vector3(
+            _facePoint.position.x,
+            _facePoint.position.y,
+            _hand.position.z) + _offset;
+
+        yield return _hand.DOMove(targetFace, 0.1f).SetEase(Ease.InOutSine).WaitForCompletion();
+
+        for (int i = 0; i < 5; i++)
+        {
+            float offsetX = Random.Range(-0.03f, 0.03f);
+            yield return _hand.DOMoveX(_hand.position.x + offsetX, 0.03f).SetEase(Ease.InOutSine).WaitForCompletion();
+            yield return _hand.DOMoveX(_hand.position.x - offsetX, 0.03f).SetEase(Ease.InOutSine).WaitForCompletion();
+        }
+
+        _makeupController.Makeup(_currentItem);
+
+        Vector3 targetChest = new Vector3(_chestPoint.position.x, _chestPoint.position.y, _hand.position.z);
+        yield return _hand.DOMove(targetChest, 0.2f).SetEase(Ease.InOutSine).WaitForCompletion();
+
+        StartCoroutine(ReturnCoroutine());
+    }
+
+    private IEnumerator ReturnCoroutine()
+    {
+        _state = HandState.Returning;
+
+        if (_currentItemObject != null && _currentItem != null && _currentItem.Type == MakeupType.Cream)
+        {
+            Vector3 itemPosition = new Vector3(
+                _currentItemObject.transform.position.x,
+                _currentItemObject.transform.position.y,
+                _hand.position.z) + _offset;
+
+            yield return _hand.DOMove(itemPosition, 0.3f).SetEase(Ease.InOutQuad).WaitForCompletion();
+        }
+        else
+        {
+            Vector3 targetStart = new Vector3(_startPosition.x, _startPosition.y, _hand.position.z);
+            yield return _hand.DOMove(targetStart, 0.3f).SetEase(Ease.InOutQuad).WaitForCompletion();
+        }
+
+        SetAllToolsActive(false);
+
+        if (_currentItemObject != null && _currentItem != null && _currentItem.Type == MakeupType.Cream)
+        {
+            _currentItemObject.SetActive(true);
+            var renderer = _currentItemObject.GetComponent<SpriteRenderer>();
+
+            Sequence appearSequence = DOTween.Sequence();
+            appearSequence.Join(_currentItemObject.transform.DOScale(1, 0.2f).SetEase(Ease.OutBack));
+            if (renderer != null)
+                appearSequence.Join(renderer.DOFade(1, 0.2f));
+            yield return appearSequence.WaitForCompletion();
+        }
+
+        if (_currentItem != null && _currentItem.Type == MakeupType.Cream)
+        {
+            Vector3 targetStart = new Vector3(_startPosition.x, _startPosition.y, _hand.position.z);
+            yield return _hand.DOMove(targetStart, 0.3f).SetEase(Ease.InOutQuad).WaitForCompletion();
+        }
+
+        _currentItem = null;
+        _currentItemObject = null;
+        _currentItemRenderer = null;
+        _state = HandState.Idle;
+    }
+
+    private void OnTap(Vector2 screenPos)
+    {
+        var worldPos = _mainCamera.ScreenToWorldPoint(screenPos);
+        var hit = Physics2D.OverlapPoint(worldPos);
+        if (hit != null)
+        {
+            if (hit.TryGetComponent<LoofahView>(out var loofah))
+            {
+                loofah.Clear(_makeupController);
+                return;
+            }
+
+            if (hit.TryGetComponent<MakeupToolView>(out var view))
+            {
+                SelectItem(view.GetData(), hit.transform.position, view.gameObject);
+                Debug.Log("Item selected via tap");
+            }
+        }
+    }
+
+    private void SetAllToolsActive(bool active)
+    {
+        if (_creamTool != null) _creamTool.gameObject.SetActive(active);
+        if (_eyeBrushTool != null) _eyeBrushTool.gameObject.SetActive(active);
+        if (_lipstickTool != null) _lipstickTool.gameObject.SetActive(active);
+        if (_blushBrushTool != null) _blushBrushTool.gameObject.SetActive(active);
     }
 
     private void OnDestroy()
     {
+        _currentTween?.Kill();
         if (_inputController != null)
         {
             _inputController.OnTapPerformed -= OnTap;
