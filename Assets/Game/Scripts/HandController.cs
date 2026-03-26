@@ -31,12 +31,15 @@ public class HandController : MonoBehaviour
         var hit = Physics2D.OverlapPoint(worldPos);
         if (hit != null)
         {
-            var view = hit.GetComponent<MakeupItemView>();
-            if (view != null)
+            if (hit.TryGetComponent<MakeupItemView>(out var view))
             {
                 var data = view.GetData();
                 _currentItem = data;
                 Debug.Log("Item selected");
+            }
+            else if (hit.TryGetComponent<LoofahView>(out var loofah))
+            {
+                loofah.Clear(_makeupController);
             }
         }
     }

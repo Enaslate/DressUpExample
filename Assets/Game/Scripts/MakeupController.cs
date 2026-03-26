@@ -6,6 +6,7 @@ public class MakeupController : MonoBehaviour
     [SerializeField] private SpriteRenderer _eyeshadowRenderer;
     [SerializeField] private SpriteRenderer _mouthRenderer;
     [SerializeField] private SpriteRenderer _blushRenderer;
+    [SerializeField] private SpriteRenderer _acneRenderer;
 
     public void Makeup(MakeupItemData data)
     {
@@ -14,7 +15,7 @@ public class MakeupController : MonoBehaviour
             MakeupType.Blush => _blushRenderer,
             MakeupType.Eyeshadow => _eyeshadowRenderer,
             MakeupType.Lipstick => _mouthRenderer,
-            //MakeupType.Cream => throw new NotImplementedException(),
+            MakeupType.Cream => _acneRenderer,
             _ => null
         };
 
@@ -37,5 +38,6 @@ public class MakeupController : MonoBehaviour
         _eyeshadowRenderer.sprite = null;
         _mouthRenderer.sprite = null;
         _eyeshadowRenderer.sprite = null;
+        _acneRenderer.gameObject.SetActive(true);
     }
 }
