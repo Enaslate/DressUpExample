@@ -37,7 +37,6 @@ public class MakeupController : MonoBehaviour
     {
         _eyeshadowRenderer.sprite = null;
         _mouthRenderer.sprite = null;
-        _eyeshadowRenderer.sprite = null;
-        _acneRenderer.gameObject.SetActive(true);
+        _blushRenderer.sprite = null;
     }
 }

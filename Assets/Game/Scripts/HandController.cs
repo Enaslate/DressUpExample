@@ -66,13 +66,8 @@ public class HandController : MonoBehaviour
             Debug.Log("Release in face zone");
             _makeupController.Makeup(_currentItem);
             _hand.position = _startPosition;
-        }
-        else
-        {
-            _hand.position = _startPosition;
-        }
-
-        _currentItem = null;
+            _currentItem = null;
+        }        
     }
 
     private void OnDestroy()
