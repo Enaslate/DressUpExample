@@ -7,7 +7,7 @@ public class UIItemButton : MonoBehaviour
     private MakeupItemData _itemData;
     private HandController _handController;
 
-    public void Initialize(MakeupItemData data, HandController hand)
+    public void Initialize(MakeupItemData data, HandController hand, GameObject tool)
     {
         _itemData = data;
         _handController = hand;
@@ -15,7 +15,7 @@ public class UIItemButton : MonoBehaviour
         GetComponent<Button>().onClick.AddListener(() =>
         {
             var worldPos = transform.position;
-            _handController.SelectItem(_itemData, worldPos, this.gameObject);
+            _handController.SelectItem(_itemData, worldPos, tool);
         });
     }
 }

@@ -15,8 +15,6 @@ public class MakeupToolView : MonoBehaviour
         _data = data;
         if (data.Type == MakeupType.Lipstick)
             _renderer.sprite = _data.ItemSprite;
-
-        gameObject.SetActive(true);
     }
 
     public MakeupItemData GetData()
